@@ -9,7 +9,7 @@
 #include <thread>
 #include <vector>
 
-class Function_pool
+class Pool
 {
 
 private:
@@ -20,22 +20,20 @@ private:
 
 public:
 
-    Function_pool();
-    ~Function_pool();
+    Pool();
+    ~Pool();
     void push(std::function<void()> func);
     void done();
     void infinite_loop_func();
 };
 
-Function_pool::Function_pool() : m_function_queue(), m_lock(), m_data_condition(), m_accept_functions(true)
-{
-}
+Pool::Pool() 
+    : m_function_queue(), m_lock(), m_data_condition(), m_accept_functions(true)
+{}
 
-Function_pool::~Function_pool()
-{
-}
+Pool::~Pool() {}
 
-void Function_pool::push(std::function<void()> func)
+void Pool::push(std::function<void()> func)
 {
     std::unique_lock<std::mutex> lock(m_lock);
     m_function_queue.push(func);
@@ -43,7 +41,7 @@ void Function_pool::push(std::function<void()> func)
     m_data_condition.notify_one();
 }
 
-void Function_pool::done()
+void Pool::done()
 {
     std::unique_lock<std::mutex> lock(m_lock);
     m_accept_functions = false;
@@ -51,7 +49,7 @@ void Function_pool::done()
     m_data_condition.notify_all();
 }
 
-void Function_pool::infinite_loop_func()
+void Pool::infinite_loop_func()
 {
     std::function<void()> func;
     while (true)
@@ -70,7 +68,7 @@ void Function_pool::infinite_loop_func()
     }
 }
 
-Function_pool func_pool;
+Pool func_pool;
 
 class quit_worker_exception : public std::exception {};
 
