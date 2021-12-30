@@ -89,7 +89,7 @@ int main()
     std::vector<std::thread> thread_pool;
     for (int i = 0; i < num_threads; i++)
     {
-        thread_pool.push_back(std::thread(&Function_pool::infinite_loop_func, &func_pool));
+        thread_pool.push_back(std::thread(&Pool::infinite_loop_func, &func_pool));
     }
 
     for (int i = 0; i < 3; i++)
